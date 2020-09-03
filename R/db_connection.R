@@ -3,20 +3,31 @@
 # ------------------------
 
 
+#' Helper function
+#'
+#' Use with try to detect and handle errors
+#'
+#' con = try(DBIConnect(..))
+#' if(is_error(con)){
+#'   handle error...
+#' }
+#'
+#' @return bool
+is_error <- function(x){
+  inherits(x, "try-error")
+}
+
 #' Clear the stored database credentials
 #'
 #' @return None
 #' @export
 #'
 clear_credentials = function(){
-
-  Sys.unsetenv('phenomet_db_host')
-  Sys.unsetenv('phenomet_db_name')
-  Sys.unsetenv('phenomet_db_user')
-  Sys.unsetenv('phenomet_db_pw')
+  credential_file = '~/.phenometR.yaml'
+  if(file.exists(credential_file)){
+    a = file.remove(credential_file)
+  }
 }
-
-
 
 #' Get database credentials
 #'
@@ -27,28 +38,23 @@ clear_credentials = function(){
 #' @export
 #'
 get_credentials = function(){
+  credential_file = '~/.phenometR.yaml'
 
   # Are they stored already?
-  db_name = Sys.getenv('phenomet_db_name')
-  if(db_name==''){
-    # ask for credentials
-    db_host <- 'jornada-vdbmy.jrn.nmsu.edu'
-    db_name <- readline('Enter the phenomet database name: ')
-    db_user <- readline('Enter the phenomet database username: ')
-    db_pw   <- readline('Enter the phenomet database password:  ')
+  c = try(yaml::read_yaml(credential_file), silent=TRUE)
 
-    Sys.setenv(phenomet_db_host = db_host)
-    Sys.setenv(phenomet_db_name = db_name)
-    Sys.setenv(phenomet_db_user = db_user)
-    Sys.setenv(phenomet_db_pw   = db_pw)
+  if(is_error(c)){
+    # ask for credentials
+    c = list()
+    c$db_host <- 'jornada-vdbmy.jrn.nmsu.edu'
+    c$db_name <- readline('Enter the phenomet database name: ')
+    c$db_user <- readline('Enter the phenomet database username: ')
+    c$db_pw   <- readline('Enter the phenomet database password:  ')
+
+    yaml::write_yaml(c, credential_file)
   }
 
-  db_host <- Sys.getenv('phenomet_db_host')
-  db_name <- Sys.getenv('phenomet_db_name')
-  db_user <- Sys.getenv('phenomet_db_user')
-  db_pw   <- Sys.getenv('phenomet_db_pw')
-
-  return(list(db_host = db_host, db_name = db_name, db_user = db_user, db_pw = db_pw))
+  return(c)
 }
 
 #' Connect to the database
@@ -61,8 +67,6 @@ get_credentials = function(){
 #'
 db_connect <- function(){
   connection_attempts = 3
-
-  is_error      <- function(x) inherits(x, "try-error")
 
   for(connection_i in 1:connection_attempts){
     c <- get_credentials()
