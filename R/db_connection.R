@@ -17,13 +17,29 @@ is_error <- function(x){
   inherits(x, "try-error")
 }
 
+#' Set the database backend.
+#' 
+#' Set by default to the primary jornada server. 
+#' Use this to set to a local sqlite db
+#' for testing only
+#'
+#' @param backend string. oen of 'jornada-server' or 'test-db'
+#'
+#' @export
+set_phenometR_backend = function(backend){
+  if(!backend %in% c('jornada-server','test-db')){
+    stop('Invalid backend: ',backend)
+  }
+  options(phenometR.backend = backend)
+}
+
 #' Clear the stored database credentials
 #'
 #' @return None
 #' @export
 #'
 clear_credentials = function(){
-  credential_file = '~/.phenometR.yaml'
+  credential_file = getOption('phenometR.credential_file')
   if(file.exists(credential_file)){
     a = file.remove(credential_file)
   }
@@ -38,7 +54,7 @@ clear_credentials = function(){
 #' @export
 #'
 get_credentials = function(){
-  credential_file = '~/.phenometR.yaml'
+  credential_file = getOption('phenometR.credential_file')
 
   # Are they stored already?
   c = try(yaml::read_yaml(credential_file), silent=TRUE)
@@ -66,6 +82,15 @@ get_credentials = function(){
 #' @export
 #'
 db_connect <- function(){
+  # Use a local sqlite db for testing purposes
+  backend <- getOption('phenometR.backend')
+  if(backend == 'test-db'){
+    con = try(DBI::dbConnect(RSQLite::SQLite(), dbname = getOption('phenometR.testdb_file')))
+    if(is_error(con)) stop('Error load test.db database')
+    return(con)
+  }
+  
+  # Otherwise connect to the primary mysql db
   connection_attempts = 3
 
   for(connection_i in 1:connection_attempts){
