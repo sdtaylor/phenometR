@@ -12,8 +12,8 @@
 get_site_list <- function(){
   con <- db_connect()
 
-  df <- tbl(src=con, 'site_info') %>%
-    collect()
+  df <- dplyr::tbl(src=con, 'site_info')
+  df <- dplyr::collect(df)
 
   DBI::dbDisconnect(con)
 
