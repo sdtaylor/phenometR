@@ -60,13 +60,36 @@ get_credentials = function(){
 #' @export
 #'
 db_connect <- function(){
+  connection_attempts = 3
 
-  c <- get_credentials()
+  is_error      <- function(x) inherits(x, "try-error")
 
-  DBI::dbConnect(RMariaDB::MariaDB(),
-                 host     = c$db_host,
-                 dbname   = c$db_name,
-                 user     = c$db_user,
-                 password = c$db_pw)
+  for(connection_i in 1:connection_attempts){
+    c <- get_credentials()
 
+    con = try(DBI::dbConnect(RMariaDB::MariaDB(),
+                             host     = c$db_host,
+                             dbname   = c$db_name,
+                             user     = c$db_user,
+                             password = c$db_pw))
+
+    if(is_error(con)){
+      if(grepl("Can't connect", con[1])){
+        stop('Cannot connect to server: ',c$db_host, ', are you on the Jornada network?')
+
+      } else if(grepl("Access denied for user", con[1])){
+        clear_credentials()
+        print('Login failed. Re-enter login info')
+
+      } else {
+        stop('Unknown connection error')
+      }
+    } else {
+      return(con)
+    }
+
+    if(connection_i == connection_attempts){
+      stop('Failed connecting to the database after ',connection_attemps, ' tries')
+    }
+  }
 }
