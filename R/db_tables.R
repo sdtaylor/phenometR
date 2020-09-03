@@ -38,8 +38,8 @@ get_site_visits <- function(site_codes=NULL, start_date=NULL, end_date=NULL){
 
   con <- db_connect()
 
-  df <- tbl(src =con, 'site_visit')
-  df <- filter(df, DATE >= start_date, DATE <= end_date)
+  df <- dplyr::tbl(src =con, 'site_visit')
+  df <- dplyr::filter(df, DATE >= start_date, DATE <= end_date)
 
   if(!is.null(site_codes)){
     site_codes <- c(site_codes)
@@ -103,7 +103,7 @@ get_plant_phenophase = function(plant_id, start_date = NULL, end_date = NULL, sh
   # Individual plant info is divided into tables by function group.
   fg <- plant_info$FUNC_GRP_CODE
 
-  plant_table <- case_when(
+  plant_table <- dplyr::case_when(
     fg == 'PG' ~ 'pg_pheno', # perennial grass
     fg == 'DS' ~ 'ds_pheno', # deciduous shrub
     fg == 'ES' ~ 'es_pheno', # evergreen shrub
@@ -112,7 +112,7 @@ get_plant_phenophase = function(plant_id, start_date = NULL, end_date = NULL, sh
 
   # each function group table has it's own columns
   # representing bbch codes.
-  table_column_starts_with <- case_when(
+  table_column_starts_with <- dplyr::case_when(
     fg == 'PG' ~ 'GR_', # perennial grass
     fg == 'DS' ~ 'DS_', # deciduous shrub
     fg == 'ES' ~ 'BE_', # evergreen shrub
