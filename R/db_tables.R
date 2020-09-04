@@ -70,6 +70,24 @@ get_plant_info = function(){
   return(plant_info)
 }
 
+#' Add info on individual sites
+#' 
+#' Given a data.frame with columns PLANT_ID, this joins the following:
+#' SITE_CODE, SPP=CODE, FUNC_GRP_CODE
+#'
+#' Meant to be used internally in phenometR
+#' 
+#' @param df 
+#'
+#' @return data.frame
+#'
+#' @examples
+add_individual_plant_info = function(df){
+  plant_info = get_plant_info()
+  plant_info = dplyr::select(plant_info, PLANT_ID, SITE_CODE, SPP_CODE, FUNC_GRP_CODE)
+  return(dplyr::left_join(df, plant_info, by='PLANT_ID'))
+}
+
 #' Get phenophase information for a single plant
 #'
 #' By default will return a data.frame with phenophase codes as columns (shape = 'wide')
@@ -127,6 +145,8 @@ get_plant_phenophase = function(plant_id, start_date = NULL, end_date = NULL, sh
 
   DBI::dbDisconnect(con)
 
+  plant_phenology = add_individual_plant_info(plant_phenology)
+  
   if(shape == 'long'){
     plant_phenology =  tidyr::pivot_longer(plant_phenology,
                                            cols = tidyr::starts_with(table_column_starts_with),
@@ -137,7 +157,9 @@ get_plant_phenophase = function(plant_id, start_date = NULL, end_date = NULL, sh
   return(plant_phenology)
 }
 
-#' Get all plant phenophases for a site. Since sites include multiple functional groups, 
+#' Get all plant phenophases for a site. 
+#' 
+#' Since sites include multiple functional groups, 
 #' this only returns in the long format with columns:
 #' c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
 #'
@@ -179,6 +201,7 @@ get_site_phenophase = function(site_code, start_date = NULL, end_date = NULL){
 
 
 #' Get all plant phenophases for a functional group.
+#' 
 #' Groups are:
 #' 'PG' - perennial grass
 #' 'DS' - deciduous shrubs
@@ -223,8 +246,9 @@ get_fg_phenophase = function(functional_group, start_date = NULL, end_date = NUL
   all_phenophases <- dplyr::filter(all_phenophases, DATE >= start_date & DATE <= end_date)
   all_phenophases <- dplyr::collect(all_phenophases)
   
-
   DBI::dbDisconnect(con)
+  
+  all_phenophases = add_individual_plant_info(all_phenophases)
   
   if(shape == 'long'){
     all_phenophases =  tidyr::pivot_longer(all_phenophases,
