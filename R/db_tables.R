@@ -137,9 +137,101 @@ get_plant_phenophase = function(plant_id, start_date = NULL, end_date = NULL, sh
   return(plant_phenology)
 }
 
+#' Get all plant phenophases for a site. Since sites include multiple functional groups, 
+#' this only returns in the long format with columns:
+#' c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
+#'
+#' @param site_code string 2 letter site code
+#' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
+#' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
+#'
+#' @return data.frame
+#' @export
+#'
+#' @examples
+#' get_site_phenophase(site_code = 'NO')
 get_site_phenophase = function(site_code, start_date = NULL, end_date = NULL){
-  # all phenophases for all plants at 1 site
-
+  # TODO: If this becomes too slow it can be sped up by doing everything in 
+  # just a few connection calls isntead of using get_plant_phenophase for every 
+  # individual. 
+  
   if(is.null(start_date)) start_date <- '2000-01-01'
   if(is.null(end_date)) end_date <- Sys.Date()
+  
+  con <- db_connect()
+  plant_info <- dplyr::tbl(con, 'focal_plant_info')
+  plant_info <- dplyr::filter(plant_info, SITE_CODE == site_code)
+  plant_info <- dplyr::collect(plant_info)
+  
+  all_phenophases = data.frame()
+  for(plant_id in plant_info$PLANT_ID){
+    p = get_plant_phenophase(plant_id = plant_id,
+                             start_date = start_date,
+                             end_date   = end_date,
+                             shape = 'long')
+    all_phenophases = dplyr::bind_rows(all_phenophases, p)
+  }
+  
+  DBI::dbDisconnect(con)
+  
+  return(all_phenophases)
+}
+
+
+#' Get all plant phenophases for a functional group.
+#' Groups are:
+#' 'PG' - perennial grass
+#' 'DS' - deciduous shrubs
+#' 'ES' - evergreen shrubs
+#' 'SU' - succulents
+#' 
+#'  If shape = 'long' then columns will be: 
+#' c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
+#'
+#' @param site_code string 2 letter site code
+#' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
+#' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
+#' @param shape string. 'wide' or 'long' for a data.frame in the respective format. default 'wide'
+#'
+#' @return data.frame
+#' @export
+#'
+#' @examples
+#' get_fg_phenophase(site_code = 'NO')
+get_fg_phenophase = function(functional_group, start_date = NULL, end_date = NULL, shape='wide'){
+  if(is.null(start_date)) start_date <- '2000-01-01'
+  if(is.null(end_date)) end_date <- Sys.Date()
+  
+  plant_table <- dplyr::case_when(
+    functional_group == 'PG' ~ 'pg_pheno', # perennial grass
+    functional_group == 'DS' ~ 'ds_pheno', # deciduous shrub
+    functional_group == 'ES' ~ 'es_pheno', # evergreen shrub
+    functional_group == 'SU' ~ 'su_pheno'  # succulent
+  )
+  
+  # each function group table has it's own columns
+  # representing bbch codes.
+  table_column_starts_with <- dplyr::case_when(
+    functional_group == 'PG' ~ 'GR_', # perennial grass
+    functional_group == 'DS' ~ 'DS_', # deciduous shrub
+    functional_group == 'ES' ~ 'BE_', # evergreen shrub
+    functional_group == 'SU' ~ 'CA_'  # succulent
+  )
+  
+  con <- db_connect()
+  all_phenophases <- dplyr::tbl(con, plant_table)
+  all_phenophases <- dplyr::filter(all_phenophases, DATE >= start_date & DATE <= end_date)
+  all_phenophases <- dplyr::collect(all_phenophases)
+  
+
+  DBI::dbDisconnect(con)
+  
+  if(shape == 'long'){
+    all_phenophases =  tidyr::pivot_longer(all_phenophases,
+                                            cols = tidyr::starts_with(table_column_starts_with),
+                                            names_to = 'PHENOPHASE',
+                                            values_to = 'STATUS')
+  }
+  
+  return(all_phenophases)
 }
