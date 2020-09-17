@@ -2,7 +2,7 @@ Package: phenometR
 Type: Package
 Title: An interface to the Phenomet database
 Version: 0.1.0
-Author: person('Shawn', 'Taylor', email = 'shawn.taylor@usda.gov')
+Authors@R: person('Shawn', 'Taylor', email = 'shawn.taylor@usda.gov')
 Description: This provides functions for accessing the Phenomet
     database at the Jornada Experimental Range. It must be used onsite
     at the Jornada or via a VPN connection.
