@@ -107,6 +107,46 @@ get_phenophase_metadata = function(full_metadata = FALSE){
   
 }
 
+#' Parse date options
+#' 
+#' Used internally to parse the date arguments and return a start/end date to use in the db filter.
+#' 
+#' If years is set then create a start/end date for the db query. In this case start_date/end_date args will be ignored.
+#' If all is NULL then set end_date to the current date and start_date at the earliest possible date. 
+#'
+#' @param years int or vector of ints for the years desired. years must be consecutive.
+#' @param start_date str in the form 'YYYY-MM-DD'
+#' @param end_date str in the form 'YYYY-MM-DD'
+#'
+#' @return list with start_date end_date options.
+#'
+parse_dates = function(years, start_date, end_date){
+  if(!is.null(years)){
+    if(any(!grepl('\\d{4}', years))) stop('years must be 4 digits, got these: ',paste(years, collapse = ','))
+    
+    start_year = min(years)
+    end_year   = max(years)
+    start_date = as.Date(paste0(start_year,'-01-01'))
+    end_date   = as.Date(paste0(end_year,'-12-31'))
+  } else {
+    if(is.null(start_date)){
+      start_date <- '2000-01-01'
+    } else {
+      if(!grepl('\\d{4}-\\d{2}-\\d{2}',start_date)) stop('start_date must be in the format YYYY-MM-DD, got: ',start_date)
+    }
+    
+    if(is.null(end_date)){
+      end_date <- Sys.Date()
+    } else {
+      if(!grepl('\\d{4}-\\d{2}-\\d{2}',end_date)) stop('end_date must be in the format YYYY-MM-DD, got: ',end_date)
+    }
+  }
+  
+  if(as.Date(end_date) <= as.Date(start_date)) stop('start_date must come before end_date')
+  
+  return(list(start_date = start_date, end_date = end_date))
+}
+
 
 #' Add info on individual sites
 #' 
@@ -132,6 +172,7 @@ add_individual_plant_info = function(df){
 #' With shape='long" columns names will be c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
 #'
 #' @param plant_id string. unique plant identifier
+#' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.
 #' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
 #' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
 #' @param shape string. 'wide' or 'long' for a data.frame in the respective format. default 'wide'
@@ -142,11 +183,10 @@ add_individual_plant_info = function(df){
 #' @examples
 #' get_plant_phenophase('CRATCA01')
 #' get_plant_phenophase('CRATCA01', start_date = '2012-01-01', end_date = '2012-12-31')
-get_plant_phenophase = function(plant_id, start_date = NULL, end_date = NULL, shape = 'wide'){
-
-
-  if(is.null(start_date)) start_date <- '2000-01-01'
-  if(is.null(end_date))   end_date   <- Sys.Date()
+get_plant_phenophase = function(plant_id, years = NULL, start_date = NULL, end_date = NULL, shape = 'wide'){
+  date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
+  start_date = date_info$start_date
+  end_date   = date_info$end_date
 
   con <- db_connect()
 
@@ -202,6 +242,7 @@ get_plant_phenophase = function(plant_id, start_date = NULL, end_date = NULL, sh
 #' c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
 #'
 #' @param site_code string 2 letter site code
+#' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.
 #' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
 #' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
 #'
@@ -210,13 +251,14 @@ get_plant_phenophase = function(plant_id, start_date = NULL, end_date = NULL, sh
 #'
 #' @examples
 #' get_site_phenophase(site_code = 'NO')
-get_site_phenophase = function(site_code, start_date = NULL, end_date = NULL){
+get_site_phenophase = function(site_code, years = NULL, start_date = NULL, end_date = NULL){
   # TODO: If this becomes too slow it can be sped up by doing everything in 
   # just a few connection calls isntead of using get_plant_phenophase for every 
   # individual. 
   
-  if(is.null(start_date)) start_date <- '2000-01-01'
-  if(is.null(end_date)) end_date <- Sys.Date()
+  date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
+  start_date = date_info$start_date
+  end_date   = date_info$end_date
   
   con <- db_connect()
   plant_info <- dplyr::tbl(con, 'focal_plant_info')
@@ -250,6 +292,7 @@ get_site_phenophase = function(site_code, start_date = NULL, end_date = NULL){
 #' c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
 #'
 #' @param site_code string 2 letter site code
+#' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.
 #' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
 #' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
 #' @param shape string. 'wide' or 'long' for a data.frame in the respective format. default 'wide'
@@ -259,9 +302,10 @@ get_site_phenophase = function(site_code, start_date = NULL, end_date = NULL){
 #'
 #' @examples
 #' get_fg_phenophase(site_code = 'NO')
-get_fg_phenophase = function(functional_group, start_date = NULL, end_date = NULL, shape='wide'){
-  if(is.null(start_date)) start_date <- '2000-01-01'
-  if(is.null(end_date)) end_date <- Sys.Date()
+get_fg_phenophase = function(functional_group, years = NULL, start_date = NULL, end_date = NULL, shape='wide'){
+  date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
+  start_date = date_info$start_date
+  end_date   = date_info$end_date
   
   plant_table <- dplyr::case_when(
     functional_group == 'PG' ~ 'pg_pheno', # perennial grass
