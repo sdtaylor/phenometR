@@ -166,6 +166,22 @@ add_individual_plant_info = function(df){
   return(dplyr::left_join(df, plant_info, by='PLANT_ID'))
 }
 
+#' Add columns for the year and day of year (DOY)
+#' 
+#' Given a data.frame with column DATE this adds two
+#' columns YEAR and DOY
+#'
+#' Meant to be used internally in phenometR
+#' 
+#' @param df a data.frame
+#'
+#' @return data.frame
+add_year_doy_columns = function(df){
+  df$DOY = as.numeric(format(as.Date(df$DATE), format='%j'))
+  df$YEAR = as.numeric(format(as.Date(df$DATE), format='%Y'))
+  return(df)
+}
+
 #' Get phenophase information for a single plant
 #'
 #' By default will return a data.frame with phenophase codes as columns (shape = 'wide')
@@ -224,6 +240,7 @@ get_plant_phenophase = function(plant_id, years = NULL, start_date = NULL, end_d
   DBI::dbDisconnect(con)
 
   plant_phenology = add_individual_plant_info(plant_phenology)
+  plant_phenology = add_year_doy_columns(plant_phenology)
   
   if(shape == 'long'){
     plant_phenology =  tidyr::pivot_longer(plant_phenology,
@@ -331,6 +348,7 @@ get_fg_phenophase = function(functional_group, years = NULL, start_date = NULL, 
   DBI::dbDisconnect(con)
   
   all_phenophases = add_individual_plant_info(all_phenophases)
+  all_phenophases = add_year_doy_columns(all_phenophases)
   
   if(shape == 'long'){
     all_phenophases =  tidyr::pivot_longer(all_phenophases,
