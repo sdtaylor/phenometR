@@ -2,7 +2,11 @@
 # Phenomet database table functions
 # ------------------------
 
-#' Get site information
+#' @name get_site_list
+#' 
+#' @title Get site information
+#' 
+#' @description Retrieve information on all the sites.
 #'
 #' @return data.frame of site information
 #' @export
@@ -53,7 +57,11 @@ get_site_visits <- function(site_codes=NULL, start_date=NULL, end_date=NULL){
   return(df)
 }
 
-#' Get all individual plant info
+#' @name get_plant_info
+#' 
+#' @title Get all individual plant info
+#'
+#' @description Retrieve information on all indvidual plants.
 #'
 #' @return data.frame of plant_id, site_code, species, functional group, etc.
 #' @export
@@ -70,12 +78,13 @@ get_plant_info = function(){
   return(plant_info)
 }
 
-#' Get phenophase metadata
+#' @name get_phenophase_metadata
 #' 
-#' eg. for the phenophase code GS_01 obtain the description 
-#' "Initial growth for perennial grasses", among other things.
+#' @title Get phenophase metadata
 #' 
-#' The full metadata info includes:
+#' @description Get a data.frame describing all the phenophases codes.
+#' 
+#' The full metadata info includes the columns:
 #' ATTRIBUTE_ID,ATTRIBUTE_NAME,ATTRIBUTE_DEFINITION,ATTRIBUTE_DATA_TYPE,NULL_VALUE,DESCRIPTION
 #'
 #' @param functional_groups boolean. If TRUE return all metadata info, if FALSE (default) return only attribute name and definition.
@@ -151,7 +160,7 @@ parse_dates = function(years, start_date, end_date){
 #' Add info on individual sites
 #' 
 #' Given a data.frame with columns PLANT_ID, this joins the following:
-#' SITE_CODE, SPP=CODE, FUNC_GRP_CODE
+#' SITE_CODE, SPP_CODE, FUNC_GRP_CODE
 #'
 #' Meant to be used internally in phenometR
 #' 
@@ -182,10 +191,18 @@ add_year_doy_columns = function(df){
   return(df)
 }
 
-#' Get phenophase information for a single plant
+#' @name get_plant_phenophase
+#' 
+#' @title Get phenophase information for a single plant
 #'
-#' By default will return a data.frame with phenophase codes as columns (shape = 'wide')
-#' With shape='long" columns names will be c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
+#' @description This function retrieves all phenophase data for a single plant_id. Can be subset to specific years,
+#'     or specific start and end dates. 
+#'     
+#'      If shape = 'long' (the default) then columns will be:   
+#'      c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG','SITE_CODE', 'SPP_CODE', 'FUNC_GRP_CODE')  
+#'      
+#'      If shape = 'wide' then all thephenophase codes will be columns.
+#'     
 #'
 #' @param plant_id string. unique plant identifier
 #' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.
@@ -252,13 +269,17 @@ get_plant_phenophase = function(plant_id, years = NULL, start_date = NULL, end_d
   return(plant_phenology)
 }
 
-#' Get all plant phenophases for a site. 
+#' @name get_site_phenophase
 #' 
-#' Since sites include multiple functional groups, 
-#' this only returns in the long format with columns:
-#' c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
+#' @title Get all plant phenophases for a site. 
+#' 
+#' @description Retrieve phenophase data for all plants at a specific site. Can be subset to specific years,
+#'     or specific start and end dates. Since sites include multiple functional groups, 
+#'     this only returns in the long format with columns:
+#'     
+#'      c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG','SITE_CODE', 'SPP_CODE', 'FUNC_GRP_CODE')
 #'
-#' @param site_code string 2 letter site code
+#' @param site_code string. 2 letter site code
 #' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.
 #' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
 #' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
@@ -297,16 +318,23 @@ get_site_phenophase = function(site_code, years = NULL, start_date = NULL, end_d
 }
 
 
-#' Get all plant phenophases for a functional group.
+#' @name get_fg_phenophase
 #' 
-#' Groups are:
-#' 'PG' - perennial grass
-#' 'DS' - deciduous shrubs
-#' 'ES' - evergreen shrubs
-#' 'SU' - succulents
+#' @title Get all plant phenophases for a functional group.
 #' 
-#'  If shape = 'long' then columns will be: 
-#' c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG')
+#' @description This retrieves all phenophase data for a specific functional group at all sites. This can be subset to specific years,
+#'     or specific start and end dates.
+#'     
+#'     Functional Groups are:  
+#'     'PG' - perennial grass
+#'     'DS' - deciduous shrubs
+#'     'ES' - evergreen shrubs
+#'     'SU' - succulents
+#'     
+#'      If shape = 'long' (the default) then columns will be:   
+#'      c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG','SITE_CODE', 'SPP_CODE', 'FUNC_GRP_CODE')  
+#'      
+#'      If shape = 'wide' then all thephenophase codes will be columns.
 #'
 #' @param site_code string 2 letter site code
 #' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.

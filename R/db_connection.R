@@ -33,7 +33,12 @@ set_phenometR_backend = function(backend){
   options(phenometR.backend = backend)
 }
 
-#' Clear the stored database credentials
+#' @name clear_credentials
+#' 
+#' @title Clear the stored database credentials
+#' 
+#' @description Clear the saved login information stored on your local machine. Try
+#'     using this if your having trouble connecting to the database.
 #'
 #' @return None
 #' @export
