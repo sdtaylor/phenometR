@@ -191,7 +191,7 @@ add_year_doy_columns = function(df){
 #' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.
 #' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
 #' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
-#' @param shape string. 'wide' or 'long' for a data.frame in the respective format. default 'wide'
+#' @param shape string. 'wide' or 'long' for a data.frame in the respective format. default 'long'
 #'
 #' @return data.frame of phenophases by date
 #' @export
@@ -199,7 +199,7 @@ add_year_doy_columns = function(df){
 #' @examples
 #' get_plant_phenophase('CRATCA01')
 #' get_plant_phenophase('CRATCA01', start_date = '2012-01-01', end_date = '2012-12-31')
-get_plant_phenophase = function(plant_id, years = NULL, start_date = NULL, end_date = NULL, shape = 'wide'){
+get_plant_phenophase = function(plant_id, years = NULL, start_date = NULL, end_date = NULL, shape = 'long'){
   date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
   start_date = date_info$start_date
   end_date   = date_info$end_date
@@ -312,14 +312,14 @@ get_site_phenophase = function(site_code, years = NULL, start_date = NULL, end_d
 #' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.
 #' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
 #' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
-#' @param shape string. 'wide' or 'long' for a data.frame in the respective format. default 'wide'
+#' @param shape string. 'wide' or 'long' for a data.frame in the respective format. default 'long'
 #'
 #' @return data.frame
 #' @export
 #'
 #' @examples
 #' get_fg_phenophase(site_code = 'NO')
-get_fg_phenophase = function(functional_group, years = NULL, start_date = NULL, end_date = NULL, shape='wide'){
+get_fg_phenophase = function(functional_group, years = NULL, start_date = NULL, end_date = NULL, shape='long'){
   date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
   start_date = date_info$start_date
   end_date   = date_info$end_date
