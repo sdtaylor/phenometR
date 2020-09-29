@@ -1,0 +1,8 @@
+language: R
+cache: packages
+
+install:
+    - Rscript -e 'install.packages(c("testthat", "dplyr", "dbplyr", "tidyr", "DBI", "RMariaDB", "RSQLite", "yaml", "devtools"), quiet=FALSE)'
+
+script:
+    - Rscript -e 'devtools::test(stop_on_failure=TRUE)'
