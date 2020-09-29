@@ -260,6 +260,9 @@ get_site_phenophase = function(site_code, years = NULL, start_date = NULL, end_d
   start_date = date_info$start_date
   end_date   = date_info$end_date
   
+  site_info = get_site_list()
+  if(!site_code %in% site_info$SITE_CODE) stop('Unknown site code: ', site_code)
+  
   con <- db_connect()
   plant_info <- dplyr::tbl(con, 'focal_plant_info')
   plant_info <- dplyr::filter(plant_info, SITE_CODE == site_code)
@@ -310,6 +313,8 @@ get_site_phenophase = function(site_code, years = NULL, start_date = NULL, end_d
 #' @examples
 #' get_fg_phenophase(site_code = 'NO')
 get_fg_phenophase = function(functional_group, years = NULL, start_date = NULL, end_date = NULL, shape='long'){
+  if(!functional_group %in% c('PG','DS','ES','SU')) stop('Unknown functional group: ', functional_group)
+  
   date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
   start_date = date_info$start_date
   end_date   = date_info$end_date
