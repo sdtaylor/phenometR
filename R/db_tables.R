@@ -78,44 +78,6 @@ get_plant_info = function(){
   return(plant_info)
 }
 
-#' @name get_phenophase_metadata
-#' 
-#' @title Get phenophase metadata
-#' 
-#' @description Get a data.frame describing all the phenophases codes.
-#' 
-#' The full metadata info includes the columns:
-#' ATTRIBUTE_ID,ATTRIBUTE_NAME,ATTRIBUTE_DEFINITION,ATTRIBUTE_DATA_TYPE,NULL_VALUE,DESCRIPTION
-#'
-#' @param functional_groups boolean. If TRUE return all metadata info, if FALSE (default) return only attribute name and definition.
-#'
-#' @return data.frame of phenophase metadata
-#' @export
-#'
-#' @examples
-#' get_phenophase_metadata()
-get_phenophase_metadata = function(full_metadata = FALSE){
-  
-  con <- db_connect()
-  
-  phenophase_md <- dplyr::tbl(con, 'pheno_metadata')
-  phenophase_md <- dplyr::collect(phenophase_md)
-  
-  DBI::dbDisconnect(con)
-  
-  # Match to only phenophase entries like PG_01, CA_202, etc.
-  # This excludes other entries in this table like observer, site, coordinates, etc.
-  to_keep <- grep('[A-Z]{2}_\\d{2,3}', phenophase_md$ATTRIBUTE_NAME)
-  phenophase_md <- phenophase_md[to_keep,]
-  
-  if(!full_metadata){
-    phenophase_md <- dplyr::select(phenophase_md, ATTRIBUTE_NAME, ATTRIBUTE_DEFINITION)
-  }
-  
-  return(phenophase_md)
-  
-}
-
 #' Parse date options
 #' 
 #' Used internally to parse the date arguments and return a start/end date to use in the db filter.
