@@ -1,4 +1,5 @@
 
+set_phenometR_backend('testthat-db')
 
 test_that('Dates must be sequental', {
   expect_error(parse_dates(years=NULL, start_date='2015-01-01', end_date='2014-01-01'))
