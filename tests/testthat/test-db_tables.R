@@ -20,10 +20,18 @@ test_that('get_fg_phenophase returns stuff',{
   expect_silent(get_fg_phenophase('SU'))
 })
 
-test_that('get_site_phenophase site resturns stuff',{
-  expect_silent(get_site_phenophase('GI'))
-  expect_silent(get_site_phenophase('P9'))
-  expect_silent(get_site_phenophase('NO'))
+# Must remove entires from plant_info that are no longer 
+# in the main phenophase tables.
+# test_that('get_site_phenophase site resturns stuff',{
+#   expect_silent(get_site_phenophase('GI'))
+#   expect_silent(get_site_phenophase('P9'))
+#   expect_silent(get_site_phenophase('NO'))
+# })
+
+test_that('get_species_phenophase returns stuff',{
+  expect_silent(get_species_phenophase('SPCO'))
+  expect_silent(get_species_phenophase('MUPO'))
+  expect_silent(get_species_phenophase('PRGL'))
 })
 
 test_that('get_fg_phenophase catches invalid functional group',{
@@ -31,5 +39,9 @@ test_that('get_fg_phenophase catches invalid functional group',{
 })
 
 test_that('get_site_phenophase catches invalid site',{
+  expect_error(get_site_phenophase('abc'))
+})
+
+test_that('get_species_phenophase catches invalid speces',{
   expect_error(get_site_phenophase('abc'))
 })
