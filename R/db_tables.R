@@ -78,44 +78,6 @@ get_plant_info = function(){
   return(plant_info)
 }
 
-#' @name get_phenophase_metadata
-#' 
-#' @title Get phenophase metadata
-#' 
-#' @description Get a data.frame describing all the phenophases codes.
-#' 
-#' The full metadata info includes the columns:
-#' ATTRIBUTE_ID,ATTRIBUTE_NAME,ATTRIBUTE_DEFINITION,ATTRIBUTE_DATA_TYPE,NULL_VALUE,DESCRIPTION
-#'
-#' @param functional_groups boolean. If TRUE return all metadata info, if FALSE (default) return only attribute name and definition.
-#'
-#' @return data.frame of phenophase metadata
-#' @export
-#'
-#' @examples
-#' get_phenophase_metadata()
-get_phenophase_metadata = function(full_metadata = FALSE){
-  
-  con <- db_connect()
-  
-  phenophase_md <- dplyr::tbl(con, 'pheno_metadata')
-  phenophase_md <- dplyr::collect(phenophase_md)
-  
-  DBI::dbDisconnect(con)
-  
-  # Match to only phenophase entries like PG_01, CA_202, etc.
-  # This excludes other entries in this table like observer, site, coordinates, etc.
-  to_keep <- grep('[A-Z]{2}_\\d{2,3}', phenophase_md$ATTRIBUTE_NAME)
-  phenophase_md <- phenophase_md[to_keep,]
-  
-  if(!full_metadata){
-    phenophase_md <- dplyr::select(phenophase_md, ATTRIBUTE_NAME, ATTRIBUTE_DEFINITION)
-  }
-  
-  return(phenophase_md)
-  
-}
-
 #' Parse date options
 #' 
 #' Used internally to parse the date arguments and return a start/end date to use in the db filter.
@@ -269,6 +231,92 @@ get_plant_phenophase = function(plant_id, years = NULL, start_date = NULL, end_d
   return(plant_phenology)
 }
 
+#' @name get_species_phenophase
+#' 
+#' @title Get phenophase information for a single species.
+#'
+#' @description This function retrieves all phenophase data for a single species. All individual at all sites for the
+#'      species will be return. Can be subset to specific years, or specific start and end dates. 
+#'      
+#'      See the output from get_plant_info() for valid species codes. 
+#'     
+#'      If shape = 'long' (the default) then columns will be:   
+#'      c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG','SITE_CODE', 'SPP_CODE', 'FUNC_GRP_CODE')  
+#'      
+#'      If shape = 'wide' then all thephenophase codes will be columns.
+#'     
+#'
+#' @param spp_code string. unique species identifier
+#' @param years Optional. integer or vector of integer for the years desired. years must be consecutive.
+#' @param start_date Optional. A string with format 'YYYY-MM-DD'. Get visit information from this date forward. Default is all prior dates.
+#' @param end_date   Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.
+#' @param shape string. 'wide' or 'long' for a data.frame in the respective format. default 'long'
+#'
+#' @return data.frame of phenophases by date
+#' @export
+#'
+#' @examples
+#' get_species_phenophase('PRGL')
+#' get_species_phenophase('PRGL', start_date = '2012-01-01', end_date = '2012-12-31')
+get_species_phenophase = function(spp_code, years = NULL, start_date = NULL, end_date = NULL, shape = 'long'){
+  date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
+  start_date = date_info$start_date
+  end_date   = date_info$end_date
+  
+  con <- db_connect()
+  
+  plant_info <- dplyr::tbl(con, 'focal_plant_info')
+  plant_info <- dplyr::filter(plant_info, SPP_CODE == spp_code)
+  plant_info <- dplyr::collect(plant_info)
+  
+  if(nrow(plant_info) == 0) stop('spp_code not found: ',plant_id)
+  
+  # Individual plant info is divided into tables by function group.
+  # All individuals for 1 species will be located in the same 
+  # functional group table.
+  fg <- unique(plant_info$FUNC_GRP_CODE)
+  
+  if(length(fg)>1){stop('Great than 1 functional group found for spp code: ',spp_code)}
+  
+  plant_table <- dplyr::case_when(
+    fg == 'PG' ~ 'pg_pheno', # perennial grass
+    fg == 'DS' ~ 'ds_pheno', # deciduous shrub
+    fg == 'ES' ~ 'es_pheno', # evergreen shrub
+    fg == 'SU' ~ 'su_pheno'  # succulent
+  )
+  
+  # each function group table has it's own columns
+  # representing bbch codes.
+  table_column_starts_with <- dplyr::case_when(
+    fg == 'PG' ~ 'GR_', # perennial grass
+    fg == 'DS' ~ 'DS_', # deciduous shrub
+    fg == 'ES' ~ 'BE_', # evergreen shrub
+    fg == 'SU' ~ 'CA_'  # succulent
+  )
+  
+  plant_phenology <- dplyr::tbl(con, plant_table)
+  plant_phenology <- dplyr::filter(plant_phenology,
+                                   DATE >= start_date, DATE <= end_date)
+  plant_phenology <- dplyr::collect(plant_phenology)
+  
+  DBI::dbDisconnect(con)
+  
+  plant_phenology <- add_individual_plant_info(plant_phenology)
+  plant_phenology <- add_year_doy_columns(plant_phenology)
+  
+  plant_phenology <- dplyr::filter(plant_phenology, SPP_CODE == spp_code)
+  
+  if(shape == 'long'){
+    plant_phenology =  tidyr::pivot_longer(plant_phenology,
+                                           cols = tidyr::starts_with(table_column_starts_with),
+                                           names_to = 'PHENOPHASE',
+                                           values_to = 'STATUS')
+  }
+  
+  return(plant_phenology)
+}
+
+
 #' @name get_site_phenophase
 #' 
 #' @title Get all plant phenophases for a site. 
@@ -297,6 +345,9 @@ get_site_phenophase = function(site_code, years = NULL, start_date = NULL, end_d
   date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
   start_date = date_info$start_date
   end_date   = date_info$end_date
+  
+  site_info = get_site_list()
+  if(!site_code %in% site_info$SITE_CODE) stop('Unknown site code: ', site_code)
   
   con <- db_connect()
   plant_info <- dplyr::tbl(con, 'focal_plant_info')
@@ -348,6 +399,8 @@ get_site_phenophase = function(site_code, years = NULL, start_date = NULL, end_d
 #' @examples
 #' get_fg_phenophase(site_code = 'NO')
 get_fg_phenophase = function(functional_group, years = NULL, start_date = NULL, end_date = NULL, shape='long'){
+  if(!functional_group %in% c('PG','DS','ES','SU')) stop('Unknown functional group: ', functional_group)
+  
   date_info = parse_dates(years = years, start_date = start_date, end_date = end_date)
   start_date = date_info$start_date
   end_date   = date_info$end_date

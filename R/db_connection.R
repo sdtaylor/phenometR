@@ -27,7 +27,7 @@ is_error <- function(x){
 #'
 #' @export
 set_phenometR_backend = function(backend){
-  if(!backend %in% c('jornada-server','test-db')){
+  if(!backend %in% c('jornada-server','test-db','testthat-db')){
     stop('Invalid backend: ',backend)
   }
   options(phenometR.backend = backend)
@@ -90,7 +90,11 @@ db_connect <- function(){
   # Use a local sqlite db for testing purposes
   backend <- getOption('phenometR.backend')
   if(backend == 'test-db'){
-    con = try(DBI::dbConnect(RSQLite::SQLite(), dbname = getOption('phenometR.testdb_file')))
+    con = try(DBI::dbConnect(RSQLite::SQLite(), dbname = getOption('phenometR.test_db_file')))
+    if(is_error(con)) stop('Error load test.db database')
+    return(con)
+  } else if(backend == 'testthat-db'){
+    con = try(DBI::dbConnect(RSQLite::SQLite(), dbname = getOption('phenometR.testthat_db_file')))
     if(is_error(con)) stop('Error load test.db database')
     return(con)
   }
