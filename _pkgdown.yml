@@ -1,0 +1,21 @@
+url: https://sdtaylor.github.io/phenometR
+development:
+  mode: auto
+reference:
+  - title: "Primary Phenophase functions"
+    desc: "Use these to access the phenomet database."
+    contents: 
+      - get_plant_phenophase
+      - get_site_phenophase
+      - get_fg_phenophase
+      - get_species_phenophase
+  - title: "Site/Plant info functions"
+    desc: "Use these for details on the sites and individual plants."
+    contents:
+      - get_site_list
+      - get_plant_info
+      - get_phenophase_metadata
+  - title: "Other"
+    desc: "Other potentially usefull functions."
+    contents:
+      - clear_credentials
