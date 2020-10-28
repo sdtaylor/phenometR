@@ -90,7 +90,8 @@ db_connect <- function(){
   # Use a local sqlite db for testing purposes
   backend <- getOption('phenometR.backend')
   if(backend == 'test-db'){
-    con = try(DBI::dbConnect(RSQLite::SQLite(), dbname = getOption('phenometR.test_db_file')))
+    db_file = system.file("extdata", "test.db", package = "phenometR")
+    con = try(DBI::dbConnect(RSQLite::SQLite(), dbname = db_file))
     if(is_error(con)) stop('Error load test.db database')
     return(con)
   } else if(backend == 'testthat-db'){
