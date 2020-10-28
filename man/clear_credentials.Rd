@@ -10,5 +10,6 @@ clear_credentials()
 None
 }
 \description{
-Clear the stored database credentials
+Clear the saved login information stored on your local machine. Try
+    using this if your having trouble connecting to the database.
 }

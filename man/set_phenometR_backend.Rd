@@ -7,7 +7,7 @@
 set_phenometR_backend(backend)
 }
 \arguments{
-\item{backend}{string. oen of 'jornada-server' or 'test-db'}
+\item{backend}{string. one of 'jornada-server' or 'test-db'}
 }
 \description{
 Set by default to the primary jornada server. 
