@@ -11,11 +11,6 @@ library(phenometR)
 ```
 
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
-set_phenometR_backend('test-db')
-```
-
-
 This will pull data for all mesquites using it's species code. Then filter it to the open flowers (`DS_08`) and leaves (`DS_02`) phenophases, then to just three of the sites (`GI`,`P9`, and `SC`), and finally only rows with status 0, or 1 to exclude null (-99) values. If you are running this for the first time it will ask for the database username and password. 
 
 ```{r}
@@ -37,7 +32,7 @@ pros_glan = pros_glan %>%
 
 And plot it. With sites as rows, the two phenophases as columns, and different colors as years. 
 
-```{r fig.width=12, fig.height=6}
+```{r fig.width=14, fig.height=14}
 ggplot(pros_glan, aes(x=week, y=percent_present, color=as.factor(YEAR))) +
   geom_point() +
   geom_line() + 
