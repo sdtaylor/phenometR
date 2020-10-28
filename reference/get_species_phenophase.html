@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get site visit information — get_site_visits • phenometR</title>
+<title>Get phenophase information for a single species. — get_species_phenophase • phenometR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,13 @@
 
 
 
-<meta property="og:title" content="Get site visit information — get_site_visits" />
-<meta property="og:description" content="Get site visit information" />
+<meta property="og:title" content="Get phenophase information for a single species. — get_species_phenophase" />
+<meta property="og:description" content="This function retrieves all phenophase data for a single species. All individual at all sites for the
+     species will be return. Can be subset to specific years, or specific start and end dates.     
+See the output from get_plant_info() for valid species codes.    
+If shape = 'long' (the default) then columns will be:   
+     c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG','SITE_CODE', 'SPP_CODE', 'FUNC_GRP_CODE')     
+If shape = 'wide' then all thephenophase codes will be columns." />
 
 
 
@@ -118,23 +123,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get site visit information</h1>
+    <h1>Get phenophase information for a single species.</h1>
     
-    <div class="hidden name"><code>get_site_visits.Rd</code></div>
+    <div class="hidden name"><code>get_species_phenophase.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get site visit information</p>
+    <p>This function retrieves all phenophase data for a single species. All individual at all sites for the
+     species will be return. Can be subset to specific years, or specific start and end dates.</p>     
+<p>See the output from get_plant_info() for valid species codes.</p>    
+<p>If shape = 'long' (the default) then columns will be:   
+     c('PLANT_ID','DATE','PHENOPHASE','STATUS','NOTE_FLAG','PHOTO_FLAG','SITE_CODE', 'SPP_CODE', 'FUNC_GRP_CODE')</p>     
+<p>If shape = 'wide' then all thephenophase codes will be columns.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_site_visits</span>(site_codes = <span class='kw'>NULL</span>, start_date = <span class='kw'>NULL</span>, end_date = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>get_species_phenophase</span>(
+  <span class='kw'>spp_code</span>,
+  years = <span class='kw'>NULL</span>,
+  start_date = <span class='kw'>NULL</span>,
+  end_date = <span class='kw'>NULL</span>,
+  shape = <span class='st'>"long"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>site_codes</th>
-      <td><p>Optional. A single site code or list of site codes. Default returns all sites.</p></td>
+      <th>spp_code</th>
+      <td><p>string. unique species identifier</p></td>
+    </tr>
+    <tr>
+      <th>years</th>
+      <td><p>Optional. integer or vector of integer for the years desired. years must be consecutive.</p></td>
     </tr>
     <tr>
       <th>start_date</th>
@@ -144,12 +164,20 @@
       <th>end_date</th>
       <td><p>Optional. A string with format 'YYYY-MM-DD'. Get visit information up to this date. Default is all dates up to todays date.</p></td>
     </tr>
+    <tr>
+      <th>shape</th>
+      <td><p>string. 'wide' or 'long' for a data.frame in the respective format. default 'long'</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data.frame of site visit information.</p>
+    <p>data.frame of phenophases by date</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>get_species_phenophase</span>(<span class='st'>'PRGL'</span>)
+</div><div class='output co'>#&gt; Error : Failed to connect: Can't connect to MySQL server on 'jornada-vdbmy.jrn.nmsu.edu' (110)</div><div class='output co'>#&gt; <span class='error'>Error in db_connect(): Cannot connect to server: jornada-vdbmy.jrn.nmsu.edu, are you on the Jornada network?</span></div><div class='input'><span class='fu'>get_species_phenophase</span>(<span class='st'>'PRGL'</span>, start_date = <span class='st'>'2012-01-01'</span>, end_date = <span class='st'>'2012-12-31'</span>)
+</div><div class='output co'>#&gt; Error : Failed to connect: Can't connect to MySQL server on 'jornada-vdbmy.jrn.nmsu.edu' (110)</div><div class='output co'>#&gt; <span class='error'>Error in db_connect(): Cannot connect to server: jornada-vdbmy.jrn.nmsu.edu, are you on the Jornada network?</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

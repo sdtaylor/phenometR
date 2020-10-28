@@ -41,10 +41,8 @@
 
 <meta property="og:title" content="Get phenophase metadata — get_phenophase_metadata" />
 <meta property="og:description" content="Get a data.frame describing all the phenophases codes.
-    eg. for the phenophase code GS_01 obtain the description 
-    &quot;Initial growth for perennial grasses&quot;, among other things.
-The full metadata info includes:
-ATTRIBUTE_ID,ATTRIBUTE_NAME,ATTRIBUTE_DEFINITION,ATTRIBUTE_DATA_TYPE,NULL_VALUE,DESCRIPTION" />
+The phenophase metadata includes the columns:
+functional_group, phenophase_type, phenophase, phenophase_desc" />
 
 
 
@@ -99,7 +97,7 @@ ATTRIBUTE_ID,ATTRIBUTE_NAME,ATTRIBUTE_DEFINITION,ATTRIBUTE_DATA_TYPE,NULL_VALUE,
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/mesquite_phenology.html">Mesquite Phenology</a>
+      <a href="../articles/mesquite_phenology.html">Mesquite Phenology Example</a>
     </li>
     <li>
       <a href="../articles/phenophases.html">Phenophase Info</a>
@@ -128,23 +126,13 @@ ATTRIBUTE_ID,ATTRIBUTE_NAME,ATTRIBUTE_DEFINITION,ATTRIBUTE_DATA_TYPE,NULL_VALUE,
     </div>
 
     <div class="ref-description">
-    <p>Get a data.frame describing all the phenophases codes.
-    eg. for the phenophase code GS_01 obtain the description 
-    "Initial growth for perennial grasses", among other things.</p>
-<p>The full metadata info includes:
-ATTRIBUTE_ID,ATTRIBUTE_NAME,ATTRIBUTE_DEFINITION,ATTRIBUTE_DATA_TYPE,NULL_VALUE,DESCRIPTION</p>
+    <p>Get a data.frame describing all the phenophases codes.</p>
+<p>The phenophase metadata includes the columns:
+functional_group, phenophase_type, phenophase, phenophase_desc</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_phenophase_metadata</span>(full_metadata = <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_phenophase_metadata</span>()</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>functional_groups</th>
-      <td><p>boolean. If TRUE return all metadata info, if FALSE (default) return only attribute name and definition.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
