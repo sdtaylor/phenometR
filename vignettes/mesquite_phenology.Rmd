@@ -1,0 +1,48 @@
+---
+title: "Mesquite Phenology Example"
+output: rmarkdown::html_vignette
+---
+
+First load the `phenometR` and `tidyverse` packages.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(phenometR)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+set_phenometR_backend('test-db')
+```
+
+
+This will pull data for all mesquites using it's species code. Then filter it to the open flowers (`DS_08`) and leaves (`DS_02`) phenophases, then to just three of the sites (`GI`,`P9`, and `SC`), and finally only rows with status 0, or 1 to exclude null (-99) values. If you are running this for the first time it will ask for the database username and password. 
+
+```{r}
+pros_glan = get_species_phenophase('PRGL') %>%
+  filter(PHENOPHASE %in% c('DS_08','DS_02')) %>%
+  filter(SITE_CODE %in% c('GI','P9','SC')) %>%
+  filter(STATUS %in% c(0,1))  
+```
+
+Add in a `week` column to get the mean numbers of plants with leaves or flowers per week.
+
+```{r message=FALSE, warning=FALSE}
+pros_glan = pros_glan %>%
+  mutate(week = lubridate::week(DATE)) %>%
+  group_by(SITE_CODE, PHENOPHASE, YEAR, week) %>%
+  summarise(percent_present = mean(STATUS)) %>%
+  ungroup()
+```
+
+And plot it. With sites as rows, the two phenophases as columns, and different colors as years. 
+
+```{r fig.width=12, fig.height=6}
+ggplot(pros_glan, aes(x=week, y=percent_present, color=as.factor(YEAR))) +
+  geom_point() +
+  geom_line() + 
+  scale_color_viridis_d() + 
+  facet_wrap(SITE_CODE~PHENOPHASE, ncol=2) +
+  theme_bw(20)
+```
+

@@ -39,26 +39,18 @@ PLANT_ID DATE       NOTES_FLAG PHOTO_FLAG SITE_CODE SPP_CODE FUNC_GRP_CODE   DOY
  7 GIPRGL02 2010-03-17          0          0 GI        PRGL     DS               76  2010 DS_07           2
 ```
 
-The four functions are:
+### The four main functions are:
 
-#### get_plant_phenophase()
+- [get_plant_phenophase()](reference/get_plant_phenophase.html) returns all phenophase data for a specific `plant_id`.
 
-Returns all phenophase data for a specific `plant_id`.
+- [get_site_phenophase()](reference/get_site_phenophase.html) returns all phenophase data for a specific `site_id`.
 
-#### get_site_phenophase()
+- [get_fg_phenophase()](reference/get_fg_phenophase.html) returns all phenophase data for a specific `functional_group`.
 
-Returns all phenophase data for a specific `site_id`.
+- [get_species_phenophase()](reference/get_species_phenophase.html) returns all phenophase data for a specific `spp_code`.
 
-#### get_fg_phenophase()
-
-Returns all phenophase data for a specific `functional_group`.
-
-#### get_species_phenophase()
-
-Returns all phenophase data for a specific `spp_code`.
-
+Other functions are described in the [reference](reference/index.html).
 
 ## Tutorials  
 
-one  
-two
+- [An example with mesquite flowering and leaf out](articles/mesquite_phenology.html)  
