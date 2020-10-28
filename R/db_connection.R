@@ -23,11 +23,11 @@ is_error <- function(x){
 #' Use this to set to a local sqlite db
 #' for testing only
 #'
-#' @param backend string. oen of 'jornada-server' or 'test-db'
+#' @param backend string. one of 'jornada-server' or 'test-db'
 #'
 #' @export
 set_phenometR_backend = function(backend){
-  if(!backend %in% c('jornada-server','test-db','testthat-db')){
+  if(!backend %in% c('jornada-server','test-db')){
     stop('Invalid backend: ',backend)
   }
   options(phenometR.backend = backend)
@@ -94,11 +94,7 @@ db_connect <- function(){
     con = try(DBI::dbConnect(RSQLite::SQLite(), dbname = db_file))
     if(is_error(con)) stop('Error load test.db database')
     return(con)
-  } else if(backend == 'testthat-db'){
-    con = try(DBI::dbConnect(RSQLite::SQLite(), dbname = getOption('phenometR.testthat_db_file')))
-    if(is_error(con)) stop('Error load test.db database')
-    return(con)
-  }
+  } 
   
   # Otherwise connect to the primary mysql db
   connection_attempts = 3

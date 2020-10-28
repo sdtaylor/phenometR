@@ -9,6 +9,7 @@ reference:
       - get_site_phenophase
       - get_fg_phenophase
       - get_species_phenophase
+      - get_species_phenophase
   - title: "Site/Plant info functions"
     desc: "Use these for details on the sites and individual plants."
     contents:
