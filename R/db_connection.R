@@ -62,15 +62,15 @@ get_credentials = function(){
   credential_file = getOption('phenometR.credential_file')
 
   # Are they stored already?
-  c = try(yaml::read_yaml(credential_file), silent=TRUE)
-
-  if(is_error(c)){
+  if(file.exists(credential_file)){
+    c = yaml::read_yaml(credential_file)
+  } else {
     # ask for credentials
     c = list()
     c$db_host <- 'jornada-vdbmy.jrn.nmsu.edu'
-    c$db_name <- readline('Enter the phenomet database name: ')
-    c$db_user <- readline('Enter the phenomet database username: ')
-    c$db_pw   <- readline('Enter the phenomet database password:  ')
+    c$db_user <- readline('Enter the phenomet database USERNAME: ')
+    c$db_pw   <- readline('Enter the phenomet database PASSWORD:  ')
+    c$db_name <- readline('Enter the phenomet database NAME: ')
 
     yaml::write_yaml(c, credential_file)
   }
