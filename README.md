@@ -54,3 +54,7 @@ Other functions are described in the [reference](reference/index.html).
 ## Tutorials  
 
 - [An example with mesquite flowering and leaf out](articles/mesquite_phenology.html)  
+
+## Help & Suggestions
+
+If you have any problems or suggestions please open an issue on the [Github repo](https://github.com/sdtaylor/phenometR/issues).
