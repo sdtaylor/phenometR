@@ -1,4 +1,4 @@
-# phenometR
+# phenometR [![Build Status](https://travis-ci.org/sdtaylor/phenometR.svg?branch=master)](https://travis-ci.org/sdtaylor/phenometR)  
 
 ## Overview
 
@@ -23,7 +23,7 @@ install.packages('devtools')
 
 This package works only onsite at the Jornada office, or via the VPN. Otherwise it will fail to connect to the database.  
 
-On the first connection it will prompt for the phenomet database username and  password. These will be saved locally so you don't have to enter them again.
+On the first connection it will prompt for the phenomet database username and  password. These will be saved locally so you don't have to enter them again. If you enter the wrong database or have connection issues, try running the command `clear_credentials()`.  
 
 Four main functions are available for accessing the database at different lebels. All of them return a data frame where every row represents the status for a specific plant_id, date, and phenophase. For example:  
 
