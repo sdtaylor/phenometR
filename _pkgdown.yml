@@ -4,7 +4,7 @@ development:
 reference:
   - title: "Primary Phenophase functions"
     desc: "Use these to access the phenomet database."
-    contents: 
+    contents:
       - get_plant_phenophase
       - get_site_phenophase
       - get_fg_phenophase
@@ -20,3 +20,4 @@ reference:
     desc: "Other potentially usefull functions."
     contents:
       - clear_credentials
+      - add_percent_cover_column
