@@ -59,6 +59,9 @@
     <li>
       <a href="../articles/phenophases.html">Phenophase Info</a>
     </li>
+    <li>
+      <a href="../articles/species.html">Species Info</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -72,7 +75,8 @@
 
       
 
-      </header><div class="row">
+      </header><link href="mesquite_phenology_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="mesquite_phenology_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Mesquite Phenology Example</h1>
@@ -86,35 +90,31 @@
     
     
 <p>First load the <code>phenometR</code> and <code>tidyverse</code> packages.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">phenometR</span>)
-</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">phenometR</span><span class="op">)</span></code></pre></div>
 <p>This will pull data for all mesquites using it’s species code. Then filter it to the open flowers (<code>DS_08</code>) and leaves (<code>DS_02</code>) phenophases, then to just three of the sites (<code>GI</code>,<code>P9</code>, and <code>SC</code>), and finally only rows with status 0, or 1 to exclude null (-99) values. If you are running this for the first time it will ask for the database username and password.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">pros_glan</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_species_phenophase.html">get_species_phenophase</a></span>(<span class="st">'PRGL'</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="kw">PHENOPHASE</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'DS_08'</span>,<span class="st">'DS_02'</span>)) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="kw">SITE_CODE</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'GI'</span>,<span class="st">'P9'</span>,<span class="st">'SC'</span>)) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="kw">STATUS</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>,<span class="fl">1</span>))  
-</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pros_glan</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_species_phenophase.html">get_species_phenophase</a></span><span class="op">(</span><span class="st">'PRGL'</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">PHENOPHASE</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'DS_08'</span>,<span class="st">'DS_02'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">SITE_CODE</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'GI'</span>,<span class="st">'P9'</span>,<span class="st">'SC'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">STATUS</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>  </code></pre></div>
 <p>Add in a <code>week</code> column to get the mean numbers of plants with leaves or flowers per week.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">pros_glan</span> <span class="op">=</span> <span class="kw">pros_glan</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span>(week = <span class="kw">lubridate</span>::<span class="fu"><a href="http://lubridate.tidyverse.org/reference/week.html">week</a></span>(<span class="kw">DATE</span>)) <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span>(<span class="kw">SITE_CODE</span>, <span class="kw">PHENOPHASE</span>, <span class="kw">YEAR</span>, <span class="kw">week</span>) <span class="op">%&gt;%</span>
-  <span class="fu">summarise</span>(percent_present = <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="kw">STATUS</span>)) <span class="op">%&gt;%</span>
-  <span class="fu">ungroup</span>()
-</pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pros_glan</span> <span class="op">=</span> <span class="va">pros_glan</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>week <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/week.html">week</a></span><span class="op">(</span><span class="va">DATE</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">SITE_CODE</span>, <span class="va">PHENOPHASE</span>, <span class="va">YEAR</span>, <span class="va">week</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">summarise</span><span class="op">(</span>percent_present <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">STATUS</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>And plot it. With sites as rows, the two phenophases as columns, and different colors as years.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu">ggplot</span>(<span class="kw">pros_glan</span>, <span class="fu">aes</span>(x=<span class="kw">week</span>, y=<span class="kw">percent_present</span>, color=<span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span>(<span class="kw">YEAR</span>))) <span class="op">+</span>
-  <span class="fu">geom_point</span>() <span class="op">+</span>
-  <span class="fu">geom_line</span>() <span class="op">+</span> 
-  <span class="fu">scale_color_viridis_d</span>() <span class="op">+</span> 
-  <span class="fu">facet_wrap</span>(<span class="kw">SITE_CODE</span><span class="op">~</span><span class="kw">PHENOPHASE</span>, ncol=<span class="fl">2</span>) <span class="op">+</span>
-  <span class="fu">theme_bw</span>(<span class="fl">20</span>)
-</pre></div>
-<p><img src="mesquite_phenology_files/figure-html/unnamed-chunk-5-1.png" width="1152"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="va">pros_glan</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">week</span>, y<span class="op">=</span><span class="va">percent_present</span>, color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">YEAR</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">scale_color_viridis_d</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">facet_wrap</span><span class="op">(</span><span class="va">SITE_CODE</span><span class="op">~</span><span class="va">PHENOPHASE</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">theme_bw</span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></code></pre></div>
+<p><img src="mesquite_phenology_files/figure-html/unnamed-chunk-4-1.png" width="1344"></p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

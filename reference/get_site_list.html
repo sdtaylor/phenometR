@@ -100,6 +100,9 @@
     <li>
       <a href="../articles/phenophases.html">Phenophase Info</a>
     </li>
+    <li>
+      <a href="../articles/species.html">Species Info</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -127,7 +130,7 @@
     <p>Retrieve information on all the sites.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_site_list</span>()</pre>
+    <pre class="usage"><span class='fu'>get_site_list</span><span class='op'>(</span><span class='op'>)</span></pre>
 
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -135,8 +138,19 @@
     <p>data.frame of site information</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>get_site_list</span>()
-</div><div class='output co'>#&gt; Error : Failed to connect: Can't connect to MySQL server on 'jornada-vdbmy.jrn.nmsu.edu' (110)</div><div class='output co'>#&gt; <span class='error'>Error in db_connect(): Cannot connect to server: jornada-vdbmy.jrn.nmsu.edu, are you on the Jornada network?</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>get_site_list</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 9 x 8</span><span>
+#&gt;   SITE_CODE SITE_NAME SOIL_TYPE        UTMX    UTMY SITE_LAT SITE_LONG ECOL_SITE
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>    
+#&gt; </span><span style='color: #555555;'>1</span><span> BA        BASN      Berino-Dona A~    -</span><span style='color: #BB0000;'>99</span><span>     -</span><span style='color: #BB0000;'>99</span><span>   -</span><span style='color: #BB0000;'>100.</span><span>      -</span><span style='color: #BB0000;'>100.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       
+#&gt; </span><span style='color: #555555;'>2</span><span> CR        CRN       Dona Ana-Reag~ </span><span style='text-decoration: underline;'>336</span><span>621 3</span><span style='text-decoration: underline;'>609</span><span>796     32.6     -</span><span style='color: #BB0000;'>107.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       
+#&gt; </span><span style='color: #555555;'>3</span><span> GI        GIBP      Onite-Pajarit~ </span><span style='text-decoration: underline;'>326</span><span>859 3</span><span style='text-decoration: underline;'>607</span><span>250     32.6     -</span><span style='color: #BB0000;'>107.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       
+#&gt; </span><span style='color: #555555;'>4</span><span> GR        GRAV      Nickel-Upton ~    -</span><span style='color: #BB0000;'>99</span><span>     -</span><span style='color: #BB0000;'>99</span><span>   -</span><span style='color: #BB0000;'>100.</span><span>      -</span><span style='color: #BB0000;'>100.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       
+#&gt; </span><span style='color: #555555;'>5</span><span> NO        NORT      Onite-Pintura~ </span><span style='text-decoration: underline;'>332</span><span>223 3</span><span style='text-decoration: underline;'>610</span><span>395   -</span><span style='color: #BB0000;'>100.</span><span>      -</span><span style='color: #BB0000;'>100.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       
+#&gt; </span><span style='color: #555555;'>6</span><span> P9        PASTURE9  Simona-Harris~ </span><span style='text-decoration: underline;'>329</span><span>210 3</span><span style='text-decoration: underline;'>605</span><span>643     32.6     -</span><span style='color: #BB0000;'>107.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       
+#&gt; </span><span style='color: #555555;'>7</span><span> SC        SCAN      Dona Ana-Reag~ </span><span style='text-decoration: underline;'>340</span><span>425 3</span><span style='text-decoration: underline;'>603</span><span>405     32.6     -</span><span style='color: #BB0000;'>107.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       
+#&gt; </span><span style='color: #555555;'>8</span><span> TR        TROMBLE   </span><span style='color: #BB0000;'>NA</span><span>             </span><span style='text-decoration: underline;'>349</span><span>571 3</span><span style='text-decoration: underline;'>606</span><span>412     32.6     -</span><span style='color: #BB0000;'>107.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       
+#&gt; </span><span style='color: #555555;'>9</span><span> TW        TWEEDIE   </span><span style='color: #BB0000;'>NA</span><span>             </span><span style='text-decoration: underline;'>346</span><span>596 3</span><span style='text-decoration: underline;'>606</span><span>144     32.6     -</span><span style='color: #BB0000;'>107.</span><span> </span><span style='color: #BB0000;'>NA</span><span>       </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

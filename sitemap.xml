@@ -7,6 +7,9 @@
     <loc>https://sdtaylor.github.io/phenometR/reference/add_individual_plant_info.html</loc>
   </url>
   <url>
+    <loc>https://sdtaylor.github.io/phenometR/reference/add_percent_cover_column.html</loc>
+  </url>
+  <url>
     <loc>https://sdtaylor.github.io/phenometR/reference/add_year_doy_columns.html</loc>
   </url>
   <url>
@@ -56,5 +59,8 @@
   </url>
   <url>
     <loc>https://sdtaylor.github.io/phenometR/articles/phenophases.html</loc>
+  </url>
+  <url>
+    <loc>https://sdtaylor.github.io/phenometR/articles/species.html</loc>
   </url>
 </urlset>

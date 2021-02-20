@@ -61,6 +61,9 @@
     <li>
       <a href="articles/phenophases.html">Phenophase Info</a>
     </li>
+    <li>
+      <a href="articles/species.html">Species Info</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -76,9 +79,10 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="phenometr" class="section level1">
+<div id="phenometr-build-status" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#phenometr" class="anchor"></a>phenometR</h1></div>
+<a href="#phenometr-build-status" class="anchor"></a>phenometR <a href="https://travis-ci.org/sdtaylor/phenometR"><img src="https://travis-ci.org/sdtaylor/phenometR.svg?branch=master" alt="Build Status"></a>
+</h1></div>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -96,7 +100,7 @@
 <h2 class="hasAnchor">
 <a href="#overview-1" class="anchor"></a>Overview</h2>
 <p>This package works only onsite at the Jornada office, or via the VPN. Otherwise it will fail to connect to the database.</p>
-<p>On the first connection it will prompt for the phenomet database username and password. These will be saved locally so you don’t have to enter them again.</p>
+<p>On the first connection it will prompt for the phenomet database username and password. These will be saved locally so you don’t have to enter them again. If you enter the wrong database or have connection issues, try running the command <code><a href="reference/clear_credentials.html">clear_credentials()</a></code>.</p>
 <p>Four main functions are available for accessing the database at different lebels. All of them return a data frame where every row represents the status for a specific plant_id, date, and phenophase. For example:</p>
 <pre><code>PLANT_ID DATE       NOTES_FLAG PHOTO_FLAG SITE_CODE SPP_CODE FUNC_GRP_CODE   DOY  YEAR PHENOPHASE STATUS
    &lt;chr&gt;    &lt;chr&gt;           &lt;int&gt;      &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;int&gt;
@@ -126,9 +130,9 @@
 <li><a href="articles/mesquite_phenology.html">An example with mesquite flowering and leaf out</a></li>
 </ul>
 </div>
-<div id="help-suggestions" class="section level2">
+<div id="help--suggestions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#help-suggestions" class="anchor"></a>Help &amp; Suggestions</h2>
+<a href="#help--suggestions" class="anchor"></a>Help &amp; Suggestions</h2>
 <p>If you have any problems or suggestions please open an issue on the <a href="https://github.com/sdtaylor/phenometR/issues">Github repo</a>.</p>
 </div>
 </div>
