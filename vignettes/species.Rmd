@@ -1,0 +1,25 @@
+---
+title: "Species Info"
+output: rmarkdown::html_vignette
+---
+
+## Species Info
+
+|Species Code |Species                |Common Name       |Functional Group|Group Code |Growth Form |Pathway |
+|:--------|:----------------------|:-----------------|:---------------|:-------------|:-----------|:---------|
+|ARPU     |Aristida purpurea      |purple threeawn   |Perennial Grass |PG            |Graminoid   |C4        |
+|ARTE     |Aristida ternipes      |spidergrass       |Perennial Grass |PG            |Graminoid   |C4        |
+|ATCA     |Atriplex canescens     |fourwing saltbush |Deciduous Shrub |DS            |Shrub       |C3        |
+|BOER     |Bouteloua eriopoda     |black grama       |Perennial Grass |PG            |Graminoid   |C4        |
+|ERLE     |Eragrostis lehmanniana |Lehmann lovegrass |perennial grass |PG            |Graminoid   |C4        |
+|FLCE     |Flourensia cernua      |American tarwort  |Deciduous Shrub |DS            |Shrub       |C3        |
+|GUSA     |Gutierrezia sarothrae  |broom snakeweed   |Deciduous Shrub |DS            |Shrub       |C3        |
+|LATR     |Larrea tridentata      |creosote bush     |Evergreen Shrub |ES            |Shrub       |C3        |
+|MUPO     |Muhlenbergia porteri   |bush muhly        |Perennial Grass |PG            |Graminoid   |C4        |
+|PAIN     |Parthenium incanum     |mariola           |Deciduous Shrub |DS            |Shrub       |C3        |
+|PLMU     |Pleuraphis mutica      |tobosagrass       |Perennial Grass |PG            |Graminoid   |C4        |
+|PRGL     |Prosopis glandulosa    |honey mesquite    |Deciduous Shrub |DS            |Shrub       |C3        |
+|SPAI     |Sporobolus airoides    |alkali sacaton    |Perennial Grass |PG            |Graminoid   |C4        |
+|SPCO     |Sporobolus contractus  |spike dropseed    |Perennial Grass |PG            |Graminoid   |C4        |
+|SPFL     |Sporobolus flexuosus   |mesa dropseed     |Perennial Grass |PG            |Graminoid   |C4        |
+|YUEL     |Yucca elata            |soaptree yucca    |Succulent       |SU            |Shrub       |CAM       |
