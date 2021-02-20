@@ -45,3 +45,24 @@ test_that('get_site_phenophase catches invalid site',{
 test_that('get_species_phenophase catches invalid speces',{
   expect_error(get_site_phenophase('abc'))
 })
+
+test_that('add_percent_cover_column() working correctly for PRGL',{
+  has_cover_values = add_percent_cover_column(get_species_phenophase('PRGL'))
+  has_cover_values = dplyr::filter(has_cover_values, PHENOPHASE %in% c('DS_202','DS_214'))
+  expect_true(all(!is.na(has_cover_values$PERCENT_COVER)))
+  expect_true(all((has_cover_values$PERCENT_COVER >= 0) & (has_cover_values$PERCENT_COVER <= 100)))
+})
+
+test_that('add_percent_cover_column() working correctly for perennial grasses',{
+  has_cover_values = add_percent_cover_column(get_fg_phenophase('PG'))
+  has_cover_values = dplyr::filter(has_cover_values, PHENOPHASE %in% c('GR_202'))
+  expect_true(all(!is.na(has_cover_values$PERCENT_COVER)))
+  expect_true(all((has_cover_values$PERCENT_COVER >= 0) & (has_cover_values$PERCENT_COVER <= 100)))
+})
+
+test_that('add_percent_cover_column() adding NA to non-relavant phenophases',{
+  # All PG phenophases except GR_202 should be NA
+  has_cover_values = add_percent_cover_column(get_fg_phenophase('PG'))
+  has_cover_values = dplyr::filter(has_cover_values, PHENOPHASE !='GR_202')
+  expect_true(all(is.na(has_cover_values$PERCENT_COVER)))
+})
